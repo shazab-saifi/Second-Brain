@@ -1,0 +1,22 @@
+{
+  "name": "secondbrain",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "built": "tsc -b",
+    "start": "node dist/index.js",
+    "dev": "npm run built && npm run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.2",
+    "typescript": "^5.6.3"
+  }
+}
