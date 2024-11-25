@@ -67,20 +67,19 @@ app.post("/api/v1/content", userMiddleware, async (req: Request, res: Response) 
     }
 })
 
-app.get("/api/v1/content", userMiddleware, (req, res) => {
+app.get("/api/v1/content", userMiddleware, async (req, res) => {
     const userId = req.userId;
     try {
-        const content = ContentModel.find({
-            userId,
-        });
+        const content = await ContentModel.find({ userId }).populate("userId", "userName");
 
-        if (!content) {
-            res.status(204).json({
+        if (content.length == 0) {
+            res.status(404).json({
                 msg: "No content!"
             });
         } else {
-            res.json({ content });
+            res.json({content});
         }
+
     } catch (error) {
         console.error("Internal server error: " + error);
         res.status(500).json({
@@ -89,8 +88,24 @@ app.get("/api/v1/content", userMiddleware, (req, res) => {
     }
 })
 
-app.delete("/api/v1/content", (req, res) => {
+app.delete("/api/v1/content", async (req, res) => {
+    const contentId = req.body.contentId;
 
+    try {
+        await ContentModel.deleteOne({
+            contentId
+        })
+
+        res.json({
+            msg: "Content deleted successfully!"
+        })
+        
+    } catch (error) {
+        console.error("Internal server error: " + error);
+        res.status(500).json({
+            err: `Internal server ${error}`
+        });
+    }
 })
 
 app.post("/api/v1/brain/share", (req, res) => {
