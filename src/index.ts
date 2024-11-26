@@ -77,7 +77,7 @@ app.get("/api/v1/content", userMiddleware, async (req, res) => {
                 msg: "No content!"
             });
         } else {
-            res.json({content});
+            res.json({ content });
         }
 
     } catch (error) {
@@ -88,18 +88,29 @@ app.get("/api/v1/content", userMiddleware, async (req, res) => {
     }
 })
 
-app.delete("/api/v1/content", async (req, res) => {
+app.delete("/api/v1/content", userMiddleware, async (req, res) => {
     const contentId = req.body.contentId;
+    console.log(contentId);
+    console.log(req.userId);
 
     try {
-        await ContentModel.deleteOne({
-            contentId
-        })
+        const response = await ContentModel.deleteOne({
+            _id: contentId,
+            userId: req.userId
+        });
 
-        res.json({
-            msg: "Content deleted successfully!"
-        })
-        
+        console.log(response)
+
+        if (response.deletedCount == 0) {
+            res.status(404).json({
+                msg: "No content found!"
+            });
+        } else {
+            res.json({
+                msg: "Content deleted successfully!"
+            });
+        }
+
     } catch (error) {
         console.error("Internal server error: " + error);
         res.status(500).json({
